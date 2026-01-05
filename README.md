@@ -1,20 +1,52 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# VoimaAI 💪
 
-# Run and deploy your AI Studio app
+AI-pohjainen treeniapuri ja valmentaja. Seuraa treenejäsi, saa palautetta ja keskustele AI-valmentajan kanssa!
 
-This contains everything you need to run your app locally.
+## Ominaisuudet
 
-View your app in AI Studio: https://ai.studio/apps/drive/19gokzJwXWpqRkQa3F5lbU2wF7SFj7GwN
+- 🏋️ Treenien seuranta (sarjat, toistot, painot)
+- 🤖 AI-valmentaja (Aino tai Arnold Schwarzenegger!)
+- 📊 Treenihistoria ja analytiikka
+- 💧 Veden ja kreatiinin seuranta
+- 🔐 Salasanasuojaus
 
-## Run Locally
+## Asennus (kehittäjille)
 
-**Prerequisites:**  Node.js
+### Paikalliset vaatimukset
+- Node.js 18+
+- npm
 
+### Käynnistys
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```bash
+npm install
+npm run dev
+```
+
+### Ympäristömuuttujat
+
+Luo `.env`-tiedosto projektin juureen:
+
+```env
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
+VITE_APP_PASSWORD=optional_lock_screen_password
+```
+
+## Julkaisu (Vercel)
+
+1. Pushaa koodi GitHubiin
+2. Yhdistä repo Verceliin
+3. Aseta ympäristömuuttujat Vercelin dashboardissa:
+   - `VITE_GEMINI_API_KEY`
+   - `VITE_APP_PASSWORD`
+4. Deploy!
+
+## PWA-asennus puhelimeen
+
+1. Avaa sovellus selaimessa
+2. iOS: Safari → Jaa → "Lisää kotinäyttöön"
+3. Android: Chrome → ⋮ → "Asenna sovellus"
+
+---
+
+Tehty ❤️ ja AI:n avulla
