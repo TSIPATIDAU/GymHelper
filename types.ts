@@ -28,7 +28,7 @@ export interface UserProfile {
   status: UserStatus;
   gymDuration?: string;
   breakDuration?: string;
-  preBreakDuration?: string; 
+  preBreakDuration?: string;
   creatine: CreatineConfig;
   waterIntake: number;
   waterTrackingEnabled: boolean;
@@ -87,4 +87,5 @@ export interface AppState {
   activeChatId: string;
   dailyWater: number;
   dailyCreatine: number;
+  lastResetDate: string;
 }

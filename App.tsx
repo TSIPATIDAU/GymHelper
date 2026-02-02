@@ -23,7 +23,18 @@ const App: React.FC = () => {
 
   const [state, setState] = useState<AppState>(() => {
     const saved = localStorage.getItem('voimaai_state_v5');
-    if (saved) return JSON.parse(saved);
+    const todayStr = new Date().toLocaleDateString('sv-SE');
+    
+    if (saved) {
+      const parsedState = JSON.parse(saved);
+      // Check if we need to reset daily values
+      if (parsedState.lastResetDate !== todayStr) {
+        parsedState.dailyWater = 0;
+        parsedState.dailyCreatine = 0;
+        parsedState.lastResetDate = todayStr;
+      }
+      return parsedState;
+    }
 
     const initialChatId = Date.now().toString();
     return {
@@ -40,9 +51,33 @@ const App: React.FC = () => {
       chats: [{ id: initialChatId, title: 'Uusi keskustelu', messages: [{ role: 'model', text: 'Tervehdys! Valmentajasi täällä valmiina.', timestamp: new Date().toISOString() }] }],
       activeChatId: initialChatId,
       dailyWater: 0,
-      dailyCreatine: 0
+      dailyCreatine: 0,
+      lastResetDate: todayStr
     };
   });
+
+  // Check for date change and reset daily values
+  useEffect(() => {
+    const checkDateChange = () => {
+      const todayStr = new Date().toLocaleDateString('sv-SE');
+      if (state.lastResetDate !== todayStr) {
+        setState(prev => ({
+          ...prev,
+          dailyWater: 0,
+          dailyCreatine: 0,
+          lastResetDate: todayStr
+        }));
+      }
+    };
+
+    // Check immediately
+    checkDateChange();
+
+    // Check every minute for date change
+    const interval = setInterval(checkDateChange, 60000);
+
+    return () => clearInterval(interval);
+  }, [state.lastResetDate]);
 
   useEffect(() => {
     localStorage.setItem('voimaai_state_v5', JSON.stringify(state));
