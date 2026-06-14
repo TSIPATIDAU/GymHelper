@@ -10,11 +10,24 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (password === import.meta.env.VITE_APP_PASSWORD) {
-            onUnlock();
-        } else {
+        try {
+            const response = await fetch('/api/verify_password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+            if (!response.ok) throw new Error('API error');
+            const data = await response.json();
+            if (data.success) {
+                onUnlock();
+            } else {
+                setError(true);
+                setPassword('');
+            }
+        } catch (err) {
+            console.error(err);
             setError(true);
             setPassword('');
         }

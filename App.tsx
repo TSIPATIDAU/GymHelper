@@ -15,11 +15,16 @@ import LockScreen from './components/LockScreen';
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'home' | 'history' | 'workout' | 'chat' | 'profile'>('home');
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // Check if password protection is enabled
-    const password = import.meta.env.VITE_APP_PASSWORD;
-    if (!password) return true; // No password = auth skipped
     return sessionStorage.getItem('voima_unlocked') === 'true';
   });
+  const [isPasswordRequired, setIsPasswordRequired] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch('/api/verify_password')
+      .then(res => res.json())
+      .then(data => setIsPasswordRequired(data.isPasswordRequired))
+      .catch(() => setIsPasswordRequired(false));
+  }, []);
 
   const [state, setState] = useState<AppState>(() => {
     const saved = localStorage.getItem('voimaai_state_v5');
@@ -83,7 +88,11 @@ const App: React.FC = () => {
     localStorage.setItem('voimaai_state_v5', JSON.stringify(state));
   }, [state]);
 
-  if (!isAuthenticated) {
+  if (isPasswordRequired === null) {
+    return <div className="min-h-screen flex items-center justify-center bg-slate-900 text-slate-400">Ladataan...</div>;
+  }
+
+  if (isPasswordRequired && !isAuthenticated) {
     return <LockScreen onUnlock={() => {
       sessionStorage.setItem('voima_unlocked', 'true');
       setIsAuthenticated(true);

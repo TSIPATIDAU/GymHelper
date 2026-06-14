@@ -19,8 +19,9 @@ AI-pohjainen treeniapuri ja valmentaja. Seuraa treenejäsi, saa palautetta ja ke
 ### Käynnistys
 
 ```bash
+npm install -g vercel
 npm install
-npm run dev
+vercel dev
 ```
 
 ### Ympäristömuuttujat
@@ -28,8 +29,8 @@ npm run dev
 Luo `.env`-tiedosto projektin juureen:
 
 ```env
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
-VITE_APP_PASSWORD=optional_lock_screen_password
+GEMINI_API_KEY=your_gemini_api_key_here
+APP_PASSWORD=optional_lock_screen_password
 ```
 
 ## Julkaisu (Vercel)
@@ -37,8 +38,8 @@ VITE_APP_PASSWORD=optional_lock_screen_password
 1. Pushaa koodi GitHubiin
 2. Yhdistä repo Verceliin
 3. Aseta ympäristömuuttujat Vercelin dashboardissa:
-   - `VITE_GEMINI_API_KEY`
-   - `VITE_APP_PASSWORD`
+   - `GEMINI_API_KEY`
+   - `APP_PASSWORD`
 4. Deploy!
 
 ## PWA-asennus puhelimeen
