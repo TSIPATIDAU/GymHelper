@@ -21,14 +21,8 @@ const TutorialOverlay: React.FC<Props> = ({ step, setStep, activeTab, setActiveT
     {
       tab: 'history',
       title: 'Treenilista 📋',
-      text: 'Täältä löydät kaikki aiemmat treenisi ja Aino-Valmentajan antamat analyysit jokaisesta käynnistä.',
+      text: 'Täältä löydät kaikki aiemmat treenisi ja merkinnät jokaisesta käynnistä.',
       icon: <List className="text-blue-600" size={40} />
-    },
-    {
-      tab: 'chat',
-      title: 'Keskustele valmentajasi kanssa 💬',
-      text: 'Aino-Valmentaja tuntee koko historiasi. Voit kysyä ravinnosta, treenistä tai pyytää analyysia kehityksestäsi.',
-      icon: <MessageSquare className="text-blue-600" size={40} />
     },
     {
       tab: 'profile',
@@ -48,7 +42,7 @@ const TutorialOverlay: React.FC<Props> = ({ step, setStep, activeTab, setActiveT
 
   // If we're between steps or at an invalid step, don't crash
   if (!currentStep && step <= steps.length) return null;
-  if (step > 5) return null;
+  if (step > 4) return null;
 
   const handleNext = () => {
     if (step < steps.length) {
@@ -71,7 +65,7 @@ const TutorialOverlay: React.FC<Props> = ({ step, setStep, activeTab, setActiveT
             onClick={handleNext}
             className="w-full bg-slate-900 text-white py-5 rounded-[28px] font-black flex items-center justify-center gap-2 mt-4 active:scale-95 transition-all shadow-xl"
           >
-            {step === 5 ? 'Aloita testitreeni' : 'Seuraava'} <ChevronRight size={20} />
+            {step === 4 ? 'Aloita testitreeni' : 'Seuraava'} <ChevronRight size={20} />
           </button>
         </div>
       </div>

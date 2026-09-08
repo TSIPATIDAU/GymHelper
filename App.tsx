@@ -5,15 +5,14 @@ import Onboarding from './components/Onboarding';
 import Home from './components/Home';
 import Workout from './components/Workout';
 import History from './components/History';
-import Chat from './components/Chat';
 import Profile from './components/Profile';
 import TutorialOverlay from './components/TutorialOverlay';
-import { Home as HomeIcon, List as HistoryIcon, Dumbbell, MessageSquare, User } from 'lucide-react';
+import { Home as HomeIcon, List as HistoryIcon, Dumbbell, User } from 'lucide-react';
 
 import LockScreen from './components/LockScreen';
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'home' | 'history' | 'workout' | 'chat' | 'profile'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'history' | 'workout' | 'profile'>('home');
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return sessionStorage.getItem('voima_unlocked') === 'true';
   });
@@ -112,18 +111,29 @@ const App: React.FC = () => {
       case 'home': return <Home state={state} setState={setState} />;
       case 'history': return <History sessions={state.sessions} />;
       case 'workout': return <Workout state={state} setState={setState} onCompleteTest={() => setActiveTab('home')} />;
-      case 'chat': return <Chat state={state} setState={setState} />;
       case 'profile': return <Profile profile={state.profile} setProfile={(p) => setState(prev => ({ ...prev, profile: p }))} />;
       default: return <Home state={state} setState={setState} />;
     }
   };
 
-  const NavItem = ({ id, icon: Icon, label }: { id: typeof activeTab, icon: any, label: string }) => (
-    <button onClick={() => setActiveTab(id)} className={`flex flex-col items-center justify-center w-full py-4 transition-all ${activeTab === id ? 'text-blue-600' : 'text-slate-400'}`}>
-      <Icon size={24} strokeWidth={activeTab === id ? 3 : 2} />
-      <span className="text-[9px] mt-1.5 font-black uppercase tracking-[0.1em]">{label}</span>
-    </button>
-  );
+  const NavItem = ({ id, icon: Icon, label, isHighlight }: { id: typeof activeTab, icon: any, label: string, isHighlight?: boolean }) => {
+    if (isHighlight) {
+      return (
+        <button onClick={() => setActiveTab(id)} className="flex flex-col items-center justify-center relative -top-3 transition-all active:scale-90">
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all ${activeTab === id ? 'bg-slate-900 text-white scale-105' : 'bg-blue-600 text-white'}`}>
+            <Icon size={28} />
+          </div>
+          <span className="text-[9px] mt-1 font-black uppercase tracking-widest text-slate-400">{label}</span>
+        </button>
+      );
+    }
+    return (
+      <button onClick={() => setActiveTab(id)} className={`flex flex-col items-center justify-center py-4 transition-all ${activeTab === id ? 'text-blue-600 scale-105' : 'text-slate-400'}`}>
+        <Icon size={24} strokeWidth={activeTab === id ? 3 : 2} />
+        <span className="text-[9px] mt-1.5 font-black uppercase tracking-[0.1em]">{label}</span>
+      </button>
+    );
+  };
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-white pb-32 relative overflow-x-hidden">
@@ -139,16 +149,10 @@ const App: React.FC = () => {
         />
       )}
 
-      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-xl border-t-2 border-slate-50 flex justify-around items-end px-4 shadow-[0_-15px_40px_-15px_rgba(0,0,0,0.05)] z-50 rounded-t-[44px] h-24">
+      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-xl border-t-2 border-slate-50 flex justify-around items-center px-6 shadow-[0_-15px_40px_-15px_rgba(0,0,0,0.05)] z-50 rounded-t-[44px] h-24">
         <NavItem id="home" icon={HomeIcon} label="Koti" />
-        <NavItem id="history" icon={HistoryIcon} label="Lista" />
-        <div className="relative -top-8">
-          <button onClick={() => setActiveTab('workout')} className={`w-18 h-18 rounded-[28px] flex items-center justify-center shadow-2xl transition-all ${activeTab === 'workout' ? 'bg-slate-900 text-white scale-110' : 'bg-blue-600 text-white'}`} style={{ width: '70px', height: '70px' }}>
-            <Dumbbell size={32} />
-          </button>
-          <span className="absolute -bottom-6 left-0 right-0 text-center text-[9px] font-black uppercase text-slate-400 tracking-widest">Treeni</span>
-        </div>
-        <NavItem id="chat" icon={MessageSquare} label="Chat" />
+        <NavItem id="workout" icon={Dumbbell} label="Treeni" isHighlight />
+        <NavItem id="history" icon={HistoryIcon} label="Historia" />
         <NavItem id="profile" icon={User} label="Minä" />
       </nav>
     </div>

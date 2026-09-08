@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { AppState, WorkoutSession, Exercise, SetRecord, WorkoutType } from '../types';
 import { Plus, Trash2, LogOut, SkipForward, X, Dumbbell, Save, Target, Copy, CheckCircle2, Sparkles, Pencil, Footprints, Info, Clock, Ruler } from 'lucide-react';
-import { analyzeWorkout } from '../services/geminiService';
 
 interface Props {
   state: AppState;
@@ -68,7 +67,7 @@ const Workout: React.FC<Props> = ({ state, setState, onCompleteTest }) => {
     }
   };
 
-  const handleFinish = async () => {
+  const handleFinish = () => {
     if (!activeSession) return;
     setIsFinishing(true);
     
@@ -81,7 +80,13 @@ const Workout: React.FC<Props> = ({ state, setState, onCompleteTest }) => {
       const distanceMsg = activeSession.activityDistance ? `${activeSession.activityDistance} km ` : '';
       analysis = { analysis: `Hienoa liikehdintää! ${durationMsg}${distanceMsg}tekeminen pitää aineenvaihdunnan käynnissä.`, rating: 'green' };
     } else {
-      analysis = await analyzeWorkout(state.profile, activeSession, state.sessions.filter(s => s.finished));
+      const prExercises = activeSession.exercises.filter(e => e.isPRAttempt);
+      const prMsg = prExercises.length > 0 ? ` Hienoa, teit ${prExercises.length} uutta PR-tulosta!` : '';
+      const isArnold = state.profile.coachType === 'arnold';
+      const msg = isArnold 
+        ? `Hyvää työtä!${prMsg} **Hasta la vista, gym.**` 
+        : `Hieno treeni takana!${prMsg} Treeni tallennettu onnistuneesti lokiin.`;
+      analysis = { analysis: msg, rating: 'green' };
     }
     
     updateActiveSession({ finished: true, aiAnalysis: analysis.analysis, rating: analysis.rating });
@@ -194,16 +199,10 @@ const Workout: React.FC<Props> = ({ state, setState, onCompleteTest }) => {
             </h1>
             <div className="flex items-center gap-2 mt-1">
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{state.profile.coachName} analysoi</span>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Treeni käynnissä</span>
             </div>
           </div>
         </div>
-        {!activeSession.isTest && activeSession.type !== 'Aktiviteetti' && (
-          <button onClick={async () => { setIsSaving(true); const analysis = await analyzeWorkout(state.profile, activeSession, state.sessions.filter(s => s.finished)); updateActiveSession({ aiAnalysis: analysis.analysis }); setIsSaving(false); }} disabled={isSaving} className="bg-slate-900 text-white px-5 py-3 rounded-2xl text-[11px] font-black flex items-center gap-2 shadow-xl active:scale-95 transition-all">
-            {isSaving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Save size={16} />}
-            AI-Muisti
-          </button>
-        )}
       </header>
 
       {activeSession.isTest && (
